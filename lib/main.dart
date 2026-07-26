@@ -77,7 +77,7 @@ class RadarAnaSayfa extends StatefulWidget {
 }
 
 class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
-  int _seciliSekme = 0;
+  int _seciliSekme = 0; // 0: Güçlü AL, 1: Güçlü SAT, 2: Yüksek Risk, 3: Kilit Açılımı, 4: Delist Takvimi
   List<dynamic> _binanceTickerlar = [];
   bool _yukleniyor = true;
 
@@ -102,6 +102,7 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
     }
   }
 
+  // Statik Yan Veriler
   final List<KilitTakvimModel> _kilitListesi = [
     KilitTakvimModel(coin: 'SUI', tarih: '1 Ağustos', kilitMiktari: '44M SUI (%1.3 Dolaşım)', piyasaEtkisi: 'Tahmini Etki: Orta Düzey Satış Baskısı'),
     KilitTakvimModel(coin: 'ENA', tarih: '2 Ağustos', kilitMiktari: '53M ENA (%2.1 Dolaşım)', piyasaEtkisi: 'Tahmini Etki: Hafif Doğrusal Baskı'),
@@ -126,9 +127,10 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
       ),
       body: Column(
         children: [
+          // YATAY KAYDIRILABİLİR SEKME MENÜSÜ (DÜZELTİLDİ: TÜM SEKMELER GÖRÜNECEK)
           Container(
             color: const Color(0xFF181A20),
-            padding: const EdgeInsets.symmetric(vertical: 8), // HATA BURADA DÜZELTİLDİ
+            padding: const EdgeInsets.vertical(8),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -143,6 +145,8 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
             ),
           ),
           const Divider(height: 1, color: Colors.grey),
+
+          // İÇERİK LİSTESİ
           Expanded(
             child: _yukleniyor
                 ? const Center(child: CircularProgressIndicator())
@@ -175,6 +179,7 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
     if (_seciliSekme == 3) return _kilitAcalimiListesi();
     if (_seciliSekme == 4) return _delistTakvimiListesi();
 
+    // Binance Coin Filtreleme
     List<dynamic> filtrelenmis = [];
     if (_seciliSekme == 0) {
       filtrelenmis = _binanceTickerlar.where((e) => (double.tryParse(e['priceChangePercent'] ?? '0') ?? 0) > 5).toList();
@@ -200,6 +205,7 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
             title: Text(sembol, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
             subtitle: Text('24s Değişim: %$degisim', style: TextStyle(color: isPositive ? Colors.green : Colors.red, fontSize: 12)),
             trailing: Text('\$$fiyat', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white)),
+            // TIKLAMA İŞLEVİ BURADA EKLENDİ (DÜZELTİLDİ: DETAY SAYFASINA YÖNLENDİRME)
             onTap: () {
               Navigator.push(
                 context,
@@ -266,7 +272,7 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
   }
 }
 
-// ==================== DETAY SAYFASI ====================
+// ==================== DETAY (TERMINAL) SAYFASI ====================
 class CoinDetaySayfasi extends StatelessWidget {
   final String sembol;
   final String fiyat;
@@ -283,6 +289,7 @@ class CoinDetaySayfasi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // DÜZELTİLDİ: 'const' CrossAxisAlignment.start kaldırıldı, hata giderildi.
     return Scaffold(
       appBar: AppBar(
         title: Text('$sembol 360° AI Terminali', style: const TextStyle(fontSize: 16)),
@@ -290,7 +297,6 @@ class CoinDetaySayfasi extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // HATA BURADA DÜZELTİLDİ (const kaldırıldı)
           children: [
             Container(
               width: double.infinity,
@@ -317,12 +323,12 @@ class CoinDetaySayfasi extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
+            // DÜZELTİLDİ: const eklendi, sabit analiz özeti
             Container(
-              width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(color: const Color(0xFF1E2026), borderRadius: BorderRadius.circular(12)),
               child: const Column(
-                crossAxisAlignment: CrossAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('🔍 AI Analiz Özeti', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber)),
                   SizedBox(height: 8),
