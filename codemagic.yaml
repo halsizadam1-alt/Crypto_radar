@@ -3,16 +3,23 @@ workflows:
     name: Android APK Build
     max_build_duration: 30
     instance_type: mac_mini_m1
+    environment:
+      java: 17
+      flutter: stable
     scripts:
       - name: Create Android scaffolding
         script: |
-          flutter create --org com.cryptoradar --project-name crypto_radar --platforms=android .
+          # Android altyapısı oluşturuluyor
+          flutter create --force --platforms=android --org com.cryptoradar .
+          
+          # Hatalı yazılan EdgeInsets.vertical(8) kodunu düzelt
+          sed -i '' 's/EdgeInsets.vertical(8)/EdgeInsets.symmetric(vertical: 8)/g' lib/main.dart
       - name: Get Flutter packages
         script: |
           flutter pub get
       - name: Build Android APK
         script: |
+          # Debug APK derleniyor
           flutter build apk --debug
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
-
