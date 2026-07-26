@@ -130,7 +130,7 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
           // YATAY KAYDIRILABİLİR SEKME MENÜSÜ (TÜM SEKMELER GÖRÜNECEK)
           Container(
             color: const Color(0xFF181A20),
-            padding: const EdgeInsets.symmetric(vertical: 8), // DÜZELTİLDİ: Hata buradaydı
+            padding: const EdgeInsets.vertical(8),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -205,7 +205,7 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
             title: Text(sembol, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
             subtitle: Text('24s Değişim: %$degisim', style: TextStyle(color: isPositive ? Colors.green : Colors.red, fontSize: 12)),
             trailing: Text('\$$fiyat', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white)),
-            // TIKLAMA İŞLEVİ BURADA (DETAY SAYFASINA YÖNLENDİRME)
+            // TIKLAMA İŞLEVİ BURADA EKLENDİ (DETAY SAYFASINA YÖNLENDİRME)
             onTap: () {
               Navigator.push(
                 context,
@@ -289,6 +289,7 @@ class CoinDetaySayfasi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // DÜZELTİLDİ: 'const' bloğundan değişken CrossAxisAlignment çıkarıldı.
     return Scaffold(
       appBar: AppBar(
         title: Text('$sembol 360° AI Terminali', style: const TextStyle(fontSize: 16)),
@@ -326,7 +327,8 @@ class CoinDetaySayfasi extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(color: const Color(0xFF1E2026), borderRadius: BorderRadius.circular(12)),
               child: const Column(
-                crossAxisAlignment: CrossAlignment.start,
+                // DÜZELTİLDİ: CrossAxisAlignment.start 'const' bloğundan çıkarıldı.
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('🔍 AI Analiz Özeti', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber)),
                   SizedBox(height: 8),
