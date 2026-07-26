@@ -127,10 +127,10 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
       ),
       body: Column(
         children: [
-          // YATAY KAYDIRILABİLİR SEKME MENÜSÜ (DÜZELTİLDİ: TÜM SEKMELER GÖRÜNECEK)
+          // YATAY KAYDIRILABİLİR SEKME MENÜSÜ (TÜM SEKMELER GÖRÜNECEK)
           Container(
             color: const Color(0xFF181A20),
-            padding: const EdgeInsets.vertical(8),
+            padding: const EdgeInsets.symmetric(vertical: 8), // DÜZELTİLDİ: Hata buradaydı
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -205,7 +205,7 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
             title: Text(sembol, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
             subtitle: Text('24s Değişim: %$degisim', style: TextStyle(color: isPositive ? Colors.green : Colors.red, fontSize: 12)),
             trailing: Text('\$$fiyat', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white)),
-            // TIKLAMA İŞLEVİ BURADA EKLENDİ (DÜZELTİLDİ: DETAY SAYFASINA YÖNLENDİRME)
+            // TIKLAMA İŞLEVİ BURADA (DETAY SAYFASINA YÖNLENDİRME)
             onTap: () {
               Navigator.push(
                 context,
@@ -289,7 +289,6 @@ class CoinDetaySayfasi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // DÜZELTİLDİ: 'const' CrossAxisAlignment.start kaldırıldı, hata giderildi.
     return Scaffold(
       appBar: AppBar(
         title: Text('$sembol 360° AI Terminali', style: const TextStyle(fontSize: 16)),
@@ -323,12 +322,11 @@ class CoinDetaySayfasi extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            // DÜZELTİLDİ: const eklendi, sabit analiz özeti
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(color: const Color(0xFF1E2026), borderRadius: BorderRadius.circular(12)),
               child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAlignment.start,
                 children: [
                   Text('🔍 AI Analiz Özeti', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber)),
                   SizedBox(height: 8),
