@@ -261,7 +261,6 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
     KilitTakvimModel(coin: 'APT', tarih: '12 Ağustos', kilitMiktari: '11.3M APT (\$100M+)', piyasaEtkisi: 'Tahmini Etki: Yüksek Satış Baskısı'),
   ];
 
-  // GÜNCELLENMİŞ ÇOKLU BORSA DELİST VERİ VERİTABANI
   final List<DelistModel> _cokluBorsaDelistListesi = [
     DelistModel(
       coin: 'HOT / USDT', 
@@ -620,22 +619,20 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
     );
   }
 
-  // YENİLENMİŞ VE ÇOKLU BORSA FİLTRELİ DELİST TAKVİMİ
   Widget _delistTakvimiListesi() {
     List<String> borsalar = ["Tümü", "Binance", "OKX", "Bybit", "Coinbase", "Paribu"];
 
-    List<DelistModel> gösterilecekListe = _cokluBorsaDelistListesi;
+    List<DelistModel> gosterilecekListe = _cokluBorsaDelistListesi;
     if (_seciliDelistBorsasi != "Tümü") {
-      gösterilecekListe = _cokluBorsaDelistListesi.where((e) => e.borsa == _seciliDelistBorsasi).toList();
+      gosterilecekListe = _cokluBorsaDelistListesi.where((e) => e.borsa == _seciliDelistBorsasi).toList();
     }
 
     if (_aramaMetni.isNotEmpty) {
-      gösterilecekListe = gösterilecekListe.where((e) => e.coin.contains(_aramaMetni)).toList();
+      gosterilecekListe = gosterilecekListe.where((e) => e.coin.contains(_aramaMetni)).toList();
     }
 
     return Column(
       children: [
-        // Borsa Seçim / Filtreleme Çubuğu
         Container(
           padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
           color: const Color(0xFF14161C),
@@ -676,15 +673,13 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
             ],
           ),
         ),
-
-        // Delist Kartları
         Expanded(
-          child: gösterilecekListe.isEmpty
+          child: gosterilecekListe.isEmpty
               ? const Center(child: Text("Seçili borsada delist duyurusu yok.", style: TextStyle(color: Colors.grey, fontSize: 12)))
               : ListView.builder(
-                  itemCount: gösterilecekListe.length,
+                  itemCount: gosterilecekListe.length,
                   itemBuilder: (context, index) {
-                    final item = gösterilecekListe[index];
+                    final item = gosterilecekListe[index];
                     return Card(
                       color: const Color(0xFF1E2026),
                       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -744,7 +739,7 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
   }
 }
 
-// ==================== DETAY TERMINALI (TÜM VADELİ VE SPOT MODÜLLER KORUNDU) ====================
+// ==================== DETAY TERMINALI ====================
 class CoinDetaySayfasi extends StatefulWidget {
   final String sembol;
   final String fiyat;
@@ -777,7 +772,6 @@ class _CoinDetaySayfasiState extends State<CoinDetaySayfasi> {
   double _alisiYuzdesi = 52.0;
   double _satisiYuzdesi = 48.0;
 
-  // Vadeli & Likidasyon Analizi
   String _fundingRate = "%0.0100";
   double _longOrani = 64.2;
   double _shortOrani = 35.8;
@@ -800,12 +794,12 @@ class _CoinDetaySayfasiState extends State<CoinDetaySayfasi> {
       _mumVeRsiGetir('1d', (val) => _mum24s = val),
       _alSatDerinlikGetir(),
       _vadeliIslemVerisiGetir(),
-      _tryDönusturmeHesapla(),
+      _tryDonusturmeHesapla(),
     ]);
     if (mounted) setState(() => _yukleniyor = false);
   }
 
-  Future<void> _tryDönusturmeHesapla() async {
+  Future<void> _tryDonusturmeHesapla() async {
     if (widget.sembol.endsWith('TRY')) {
       _tryKarsiligi = double.tryParse(widget.fiyat) ?? 0.0;
     } else {
