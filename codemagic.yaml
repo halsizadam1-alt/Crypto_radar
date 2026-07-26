@@ -6,12 +6,13 @@ workflows:
     scripts:
       - name: Create Android scaffolding
         script: |
-          flutter create --platforms=android .
+          flutter create --org com.cryptoradar --project-name crypto_radar --platforms=android .
       - name: Get Flutter packages
         script: |
           flutter pub get
       - name: Build Android APK
         script: |
-          flutter build apk --release
+          flutter build apk --debug
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
+
