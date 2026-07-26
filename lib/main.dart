@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     title: Text(coin['symbol'], style: const TextStyle(fontWeight: FontWeight.bold)),
                     subtitle: Text('24h Hacim: \$${double.parse(coin['quoteVolume']).toStringAsFixed(0)}'),
                     trailing: Column(
-                      mainAxisAlignment: Center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text('\$$price', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
