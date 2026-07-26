@@ -295,7 +295,7 @@ class CoinDetaySayfasi extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Row(
-              mainAxisAlignment: spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _bilgiKutusu('Fiyat', '\$$fiyat', Colors.white),
                 _bilgiKutusu('24s Değişim', '%$degisim', (double.tryParse(degisim) ?? 0) >= 0 ? Colors.green : Colors.red),
