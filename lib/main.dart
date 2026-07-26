@@ -1,3 +1,10 @@
+import 'package:flutter/material.dart';
+
+// Assuming these variables are defined in the class scope where this method resides:
+// String _fearGreedIndex = "50";
+// String _fearGreedText = "Neutral";
+// var _kureselPiyasa; 
+
 Widget _ustBilgiPaneli() {
     int indexVal = int.tryParse(_fearGreedIndex) ?? 50;
     Color indexColor = indexVal > 60 ? Colors.green : (indexVal < 40 ? Colors.red : Colors.orange);
@@ -50,4 +57,4 @@ Widget _ustBilgiPaneli() {
         ],
       ),
     );
-  }
+}
