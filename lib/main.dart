@@ -21,15 +21,19 @@ class KilitTakvimModel {
   });
 }
 
+// ÇOKLU BORSA DESTEKLİ DELİST MODELİ
 class DelistModel {
   final String coin;
-  final String borsa;
+  final String borsa; // Örn: Binance, OKX, Bybit, Coinbase, Paribu
   final String tarih;
+  final String pariteVeyaTip; // Örn: Spot, Vadeli (Futures), TRY Paritesi
   final String sebep;
+
   DelistModel({
     required this.coin,
     required this.borsa,
     required this.tarih,
+    required this.pariteVeyaTip,
     required this.sebep,
   });
 }
@@ -108,6 +112,9 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
 
   List<BalinaIslemModel> _canliBalinaListesi = [];
   Timer? _balinaTimer;
+
+  // Delist Filtreleme İçin Seçili Borsa
+  String _seciliDelistBorsasi = "Tümü";
 
   @override
   void initState() {
@@ -254,9 +261,50 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
     KilitTakvimModel(coin: 'APT', tarih: '12 Ağustos', kilitMiktari: '11.3M APT (\$100M+)', piyasaEtkisi: 'Tahmini Etki: Yüksek Satış Baskısı'),
   ];
 
-  final List<DelistModel> _delistListesi = [
-    DelistModel(coin: 'HOT (Pariteler)', borsa: 'Binance', tarih: 'Temmuz Sonu', sebep: 'Vadeli/Marjin İşlem Sonlandırma'),
-    DelistModel(coin: 'ATA / FARM / SYS', borsa: 'Binance', tarih: 'Yakın Tarihli', sebep: 'Düşük Likidite & Standart Dışı'),
+  // GÜNCELLENMİŞ ÇOKLU BORSA DELİST VERİ VERİTABANI
+  final List<DelistModel> _cokluBorsaDelistListesi = [
+    DelistModel(
+      coin: 'HOT / USDT', 
+      borsa: 'Binance', 
+      tarih: '30 Temmuz', 
+      pariteVeyaTip: 'Vadeli (Futures) İşlemler', 
+      sebep: 'Düşük Likidite & Kaldıraç Revizyonu'
+    ),
+    DelistModel(
+      coin: 'ATA / FARM / SYS', 
+      borsa: 'Binance', 
+      tarih: 'Ağustos Başı', 
+      pariteVeyaTip: 'Tüm Spot Pariteler', 
+      sebep: 'Hacim Standartlarına Uymama'
+    ),
+    DelistModel(
+      coin: 'CVC / USDT', 
+      borsa: 'OKX', 
+      tarih: '2 Ağustos', 
+      pariteVeyaTip: 'Spot İşlemler', 
+      sebep: 'Proje İnaktifliği'
+    ),
+    DelistModel(
+      coin: 'OMG / USDT', 
+      borsa: 'Bybit', 
+      tarih: '5 Ağustos', 
+      pariteVeyaTip: 'Spot & Vadeli', 
+      sebep: 'Ağ Desteği Sonlanması'
+    ),
+    DelistModel(
+      coin: 'REP / USD', 
+      borsa: 'Coinbase', 
+      tarih: '10 Ağustos', 
+      pariteVeyaTip: 'Tüm İşlem Pariteleri', 
+      sebep: 'Regülasyon Standardı Uyumsuzluğu'
+    ),
+    DelistModel(
+      coin: 'BTT / TRY', 
+      borsa: 'Paribu', 
+      tarih: '12 Ağustos', 
+      pariteVeyaTip: 'TRY Paritesi', 
+      sebep: 'Yerel Hacim Yetersizliği'
+    ),
   ];
 
   @override
@@ -323,7 +371,7 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
                   _sekmeButonu(3, '⚠️ Yüksek Risk', Colors.orange),
                   _sekmeButonu(4, '🐋 Canlı Balina Radar', Colors.purpleAccent),
                   _sekmeButonu(5, '🔓 Kilit Açılımı', Colors.amber),
-                  _sekmeButonu(6, '⛔ Delist Takvimi', Colors.redAccent),
+                  _sekmeButonu(6, '⛔ Delist Takvimi (Çoklu Borsa)', Colors.redAccent),
                 ],
               ),
             ),
@@ -508,28 +556,27 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
               child: Icon(item.isBuy ? Icons.arrow_upward : Icons.arrow_downward, color: item.isBuy ? Colors.green : Colors.red, size: 20),
             ),
             title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Text('${item.coin} / ', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 13)),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                        decoration: BoxDecoration(
-                          color: item.paraBirimi == 'TRY' ? Colors.blue.withOpacity(0.3) : Colors.amber.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          item.paraBirimi,
-                          style: TextStyle(
-                            color: item.paraBirimi == 'TRY' ? Colors.lightBlueAccent : Colors.amber,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 9,
-                          ),
+                Row(
+                  children: [
+                    Text('${item.coin} / ', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 13)),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                      decoration: BoxDecoration(
+                        color: item.paraBirimi == 'TRY' ? Colors.blue.withOpacity(0.3) : Colors.amber.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        item.paraBirimi,
+                        style: TextStyle(
+                          color: item.paraBirimi == 'TRY' ? Colors.lightBlueAccent : Colors.amber,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 9,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 Text(item.miktarGosterim, style: TextStyle(fontWeight: FontWeight.bold, color: item.isBuy ? Colors.greenAccent : Colors.redAccent, fontSize: 13)),
               ],
@@ -537,14 +584,10 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
             subtitle: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: Text(
-                    item.isBuy ? '🟢 Piyasa Alışı (Boğa Akışı)' : '🔴 Piyasa Satışı (Satış Baskısı)',
-                    style: TextStyle(color: item.isBuy ? Colors.green : Colors.red, fontSize: 10),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                Text(
+                  item.isBuy ? '🟢 Piyasa Alışı (Boğa Akışı)' : '🔴 Piyasa Satışı (Satış Baskısı)',
+                  style: TextStyle(color: item.isBuy ? Colors.green : Colors.red, fontSize: 10),
                 ),
-                const SizedBox(width: 8),
                 Text(item.zaman, style: const TextStyle(color: Colors.grey, fontSize: 10)),
               ],
             ),
@@ -577,31 +620,131 @@ class _RadarAnaSayfaState extends State<RadarAnaSayfa> {
     );
   }
 
+  // YENİLENMİŞ VE ÇOKLU BORSA FİLTRELİ DELİST TAKVİMİ
   Widget _delistTakvimiListesi() {
-    return ListView.builder(
-      itemCount: _delistListesi.length,
-      itemBuilder: (context, index) {
-        final item = _delistListesi[index];
-        return Card(
-          color: const Color(0xFF1E2026),
-          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          child: ListTile(
-            leading: const Icon(Icons.warning_amber_rounded, color: Colors.redAccent),
-            title: Text(item.coin, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 13)),
-            subtitle: Text('Sebep: ${item.sebep}', style: const TextStyle(color: Colors.grey, fontSize: 11)),
-            trailing: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(color: Colors.redAccent.withOpacity(0.2), borderRadius: BorderRadius.circular(6)),
-              child: Text(item.tarih, style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 10)),
-            ),
+    List<String> borsalar = ["Tümü", "Binance", "OKX", "Bybit", "Coinbase", "Paribu"];
+
+    List<DelistModel> gösterilecekListe = _cokluBorsaDelistListesi;
+    if (_seciliDelistBorsasi != "Tümü") {
+      gösterilecekListe = _cokluBorsaDelistListesi.where((e) => e.borsa == _seciliDelistBorsasi).toList();
+    }
+
+    if (_aramaMetni.isNotEmpty) {
+      gösterilecekListe = gösterilecekListe.where((e) => e.coin.contains(_aramaMetni)).toList();
+    }
+
+    return Column(
+      children: [
+        // Borsa Seçim / Filtreleme Çubuğu
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+          color: const Color(0xFF14161C),
+          child: Row(
+            children: [
+              const Text("Borsa Filtresi: ", style: TextStyle(color: Colors.grey, fontSize: 11, fontWeight: FontWeight.bold)),
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: borsalar.map((bName) {
+                      bool isSelected = _seciliDelistBorsasi == bName;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              _seciliDelistBorsasi = bName;
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: isSelected ? Colors.redAccent : const Color(0xFF2B2F3A),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              bName,
+                              style: TextStyle(color: isSelected ? Colors.white : Colors.grey, fontSize: 10, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+
+        // Delist Kartları
+        Expanded(
+          child: gösterilecekListe.isEmpty
+              ? const Center(child: Text("Seçili borsada delist duyurusu yok.", style: TextStyle(color: Colors.grey, fontSize: 12)))
+              : ListView.builder(
+                  itemCount: gösterilecekListe.length,
+                  itemBuilder: (context, index) {
+                    final item = gösterilecekListe[index];
+                    return Card(
+                      color: const Color(0xFF1E2026),
+                      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      child: ListTile(
+                        leading: const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 28),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(item.coin, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 13)),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: _getBorsaRenk(item.borsa).withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(color: _getBorsaRenk(item.borsa), width: 0.8),
+                              ),
+                              child: Text(
+                                item.borsa.toUpperCase(),
+                                style: TextStyle(color: _getBorsaRenk(item.borsa), fontWeight: FontWeight.bold, fontSize: 9),
+                              ),
+                            ),
+                          ],
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Kapsam: ${item.pariteVeyaTip}', style: const TextStyle(color: Colors.amberAccent, fontSize: 11, fontWeight: FontWeight.bold)),
+                              Text('Sebep: ${item.sebep}', style: const TextStyle(color: Colors.grey, fontSize: 10)),
+                            ],
+                          ),
+                        ),
+                        trailing: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(color: Colors.redAccent.withOpacity(0.2), borderRadius: BorderRadius.circular(6)),
+                          child: Text(item.tarih, style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 10)),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+        ),
+      ],
     );
+  }
+
+  Color _getBorsaRenk(String borsa) {
+    switch (borsa) {
+      case 'Binance': return Colors.amber;
+      case 'OKX': return Colors.white;
+      case 'Bybit': return Colors.orangeAccent;
+      case 'Coinbase': return Colors.blueAccent;
+      case 'Paribu': return Colors.cyanAccent;
+      default: return Colors.redAccent;
+    }
   }
 }
 
-// ==================== DETAY TERMINALI (VADELİ VE SPOT YÖN STRATEJİSİ EKLENMİŞ) ====================
+// ==================== DETAY TERMINALI (TÜM VADELİ VE SPOT MODÜLLER KORUNDU) ====================
 class CoinDetaySayfasi extends StatefulWidget {
   final String sembol;
   final String fiyat;
@@ -634,8 +777,9 @@ class _CoinDetaySayfasiState extends State<CoinDetaySayfasi> {
   double _alisiYuzdesi = 52.0;
   double _satisiYuzdesi = 48.0;
 
+  // Vadeli & Likidasyon Analizi
   String _fundingRate = "%0.0100";
-  double _longOrani = 64.2; 
+  double _longOrani = 64.2;
   double _shortOrani = 35.8;
   
   double _yukariLikidasyonMiktari = 45.2; 
@@ -656,12 +800,12 @@ class _CoinDetaySayfasiState extends State<CoinDetaySayfasi> {
       _mumVeRsiGetir('1d', (val) => _mum24s = val),
       _alSatDerinlikGetir(),
       _vadeliIslemVerisiGetir(),
-      _tryDonusturmeHesapla(),
+      _tryDönusturmeHesapla(),
     ]);
     if (mounted) setState(() => _yukleniyor = false);
   }
 
-  Future<void> _tryDonusturmeHesapla() async {
+  Future<void> _tryDönusturmeHesapla() async {
     if (widget.sembol.endsWith('TRY')) {
       _tryKarsiligi = double.tryParse(widget.fiyat) ?? 0.0;
     } else {
@@ -851,10 +995,10 @@ class _CoinDetaySayfasiState extends State<CoinDetaySayfasi> {
 
   Widget _vadeliYonRadariSekmesi() {
     double currentPrice = double.tryParse(widget.fiyat) ?? 1.0;
-    double tpLevel = currentPrice * 1.045; 
-    double slLevel = currentPrice * 0.982; 
+    double tpLevel = currentPrice * 1.045;
+    double slLevel = currentPrice * 0.982;
 
-    bool longTuzakMi = _longOrani > 65.0; 
+    bool longTuzakMi = _longOrani > 65.0;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(14),
@@ -894,6 +1038,7 @@ class _CoinDetaySayfasiState extends State<CoinDetaySayfasi> {
             ),
           ),
           const SizedBox(height: 12),
+
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(color: const Color(0xFF1E2026), borderRadius: BorderRadius.circular(12)),
@@ -923,6 +1068,7 @@ class _CoinDetaySayfasiState extends State<CoinDetaySayfasi> {
             ),
           ),
           const SizedBox(height: 12),
+
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(color: const Color(0xFF1E2026), borderRadius: BorderRadius.circular(12)),
@@ -940,6 +1086,7 @@ class _CoinDetaySayfasiState extends State<CoinDetaySayfasi> {
             ),
           ),
           const SizedBox(height: 12),
+
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(color: const Color(0xFF1E2026), borderRadius: BorderRadius.circular(12)),
