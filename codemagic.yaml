@@ -9,17 +9,15 @@ workflows:
     scripts:
       - name: Create Android scaffolding
         script: |
-          # Android altyapısı oluşturuluyor
-          flutter create --force --platforms=android --org com.cryptoradar .
-          
-          # Hatalı yazılan EdgeInsets.vertical(8) kodunu düzelt
-          sed -i '' 's/EdgeInsets.vertical(8)/EdgeInsets.symmetric(vertical: 8)/g' lib/main.dart
-      - name: Get Flutter packages
+          # Android altyapısını eksiksiz sıfırdan oluştur
+          flutter create . --platforms=android --org com.cryptoradar
+      - name: Clean and Get packages
         script: |
+          flutter clean
           flutter pub get
       - name: Build Android APK
         script: |
-          # Debug APK derleniyor
+          # APK derlemesi
           flutter build apk --debug
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
